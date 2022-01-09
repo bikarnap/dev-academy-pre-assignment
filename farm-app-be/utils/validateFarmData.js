@@ -1,14 +1,6 @@
-const validateValue = (value, minValue, maxValue) => {
-  if (value >= minValue && value <= maxValue)
-    return true
-  else
-    return false
-}
-
 const validateFarmData = (sensorType, value) => {
   switch (sensorType.toLowerCase()) {
     case 'temperature':
-      // validateValue(value, -50, 100)
       if (value >= -50 && value <= 100)
         return true
       else
