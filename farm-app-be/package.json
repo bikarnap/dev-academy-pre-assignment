@@ -11,5 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "mongoose": "^6.1.5"
+  },
+  "devDependencies": {
+    "jest": "^27.4.7"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
