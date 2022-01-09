@@ -8,18 +8,25 @@ const validateValue = (value, minValue, maxValue) => {
 const validateFarmData = (sensorType, value) => {
   switch (sensorType.toLowerCase()) {
     case 'temperature':
-      validateValue(value, -50, 100)
-      break
+      // validateValue(value, -50, 100)
+      if (value >= -50 && value <= 100)
+        return true
+      else
+        return false
     case 'rainfall':
-      validateValue(value, 0, 500)
-      break
+      if (value >= 0 && value <= 500)
+        return true
+      else
+        return false
     case 'ph':
-      validateValue(value, 0.0, 14.0)
-      break
+      if (value >= 0.0 && value <= 14.0)
+        return true
+      else
+        return false
     default:
       console.log(`Sensor type '${sensorType}' is not valid`)
       break
   }
 }
-validateFarmData('heat', 34)
-// module.exports = validateFarmData
+
+module.exports = validateFarmData
