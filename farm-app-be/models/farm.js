@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const mongoosePaginate = require('mongoose-paginate-v2')
 
 const farmSchema = new mongoose.Schema({
   location: String,
@@ -9,5 +10,7 @@ const farmSchema = new mongoose.Schema({
   },
   value: Number,    
 })
+
+farmSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Farm', farmSchema)
