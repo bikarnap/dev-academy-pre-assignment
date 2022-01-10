@@ -26,14 +26,14 @@ const uploadCsvs = (...csvs) => {
               // .then(savedFarm => console.log(savedFarm))
               .catch(err => console.log(err.message))
           } else {
-            console.log(farm.sensorType, farm.value)
+            console.log(`Invalid ${farm.sensorType} value - ${farm.value}`)
           }
         })
       })
   })
 }
 const arguments = process.argv.slice(2)
-console.log(arguments)
+console.log('arguments', arguments)
 const csvs = ['Nooras_farm.csv', 'PartialTech.csv', 'ossi_farm.csv', 'friman_metsola.csv']
 if (arguments.length > 0)
   uploadCsvs(...arguments)
