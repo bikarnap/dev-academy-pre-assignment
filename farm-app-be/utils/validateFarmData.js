@@ -17,6 +17,7 @@ const validateFarmData = (sensorType, value) => {
         return false
     default:
       console.log(`Sensor type '${sensorType}' is not valid`)
+      return false
       break
   }
 }
