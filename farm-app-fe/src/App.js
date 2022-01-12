@@ -1,7 +1,11 @@
+import { useEffect, useState } from 'react';
 import './App.css';
 
 // components
 import FarmTable from './components/FarmTable';
+
+// services
+import farmService from './services/farm';
 
 function App() {
   const initialFarms = [
@@ -21,9 +25,20 @@ function App() {
     }
   ]
 
+  const [farms, setFarms] = useState(initialFarms)
+
+  useEffect(() => {
+    farmService.getAll()
+      .then(returnedFarms => 
+        (
+          setFarms(farms.concat(returnedFarms.farms.docs))
+        )
+      )
+  }, [])
+
   return (
     <div className="App">
-      <FarmTable farms={initialFarms} />
+      <FarmTable farms={farms} />
     </div>
   );
 }
