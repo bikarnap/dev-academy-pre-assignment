@@ -1,23 +1,29 @@
-import logo from './logo.svg';
 import './App.css';
 
+// components
+import FarmTable from './components/FarmTable';
+
 function App() {
+  const initialFarms = [
+    {
+      location: 'location 1',
+      datetime: new Date().toISOString(),
+      sensorType: 'pH',
+      value: 4,
+      id: 1
+    },
+    {
+      location: 'location 2',
+      datetime: new Date().toISOString(),
+      sensorType: 'rainFall',
+      value: 235,
+      id: 2
+    }
+  ]
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <FarmTable farms={initialFarms} />
     </div>
   );
 }
