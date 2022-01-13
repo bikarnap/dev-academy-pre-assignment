@@ -3,6 +3,7 @@ import './App.css';
 
 // components
 import FarmTable from './components/FarmTable';
+import Filter from './components/Filter';
 
 // services
 import farmService from './services/farm';
@@ -26,6 +27,8 @@ function App() {
   ]
 
   const [farms, setFarms] = useState(initialFarms)
+  const [filterSensor, setFilterSensor] = useState('')
+  const [filterLocation, setFilterLocation] = useState('')
 
   useEffect(() => {
     farmService.getAll()
@@ -36,9 +39,47 @@ function App() {
       )
   }, [])
 
+  let farmsToRender = (filterSensor === '')
+    ? farms
+    : farms.filter(farm => (
+      farm.sensorType.toLowerCase().includes(filterSensor.toLowerCase())
+    ))
+  
+  farmsToRender = (filterLocation === '')
+    ? farmsToRender
+    : farmsToRender.filter(farm => (
+      farm.location.toLowerCase().includes(filterLocation.toLowerCase())
+    ))
+
+
+
+  const handleFilterSensorChange = ({ target }) => {
+    setFilterSensor(target.value)
+  }
+
+  const handleFilterLocationChange = ({ target }) => {
+    setFilterLocation(target.value)
+  }
+
   return (
-    <div className="App">
-      <FarmTable farms={farms} />
+    <div>
+      <div>
+        <Filter 
+          filter={filterSensor}
+          filterType="sensor type"
+          handleFilterChange={handleFilterSensorChange}
+          placeholder="eg: rainFall"
+        />
+      </div>
+      <div>
+        <Filter 
+          filter={filterLocation}
+          filterType="location"
+          handleFilterChange={handleFilterLocationChange}
+          placeholder="eg: Noora's farm"
+        />
+      </div>
+      <FarmTable farms={farmsToRender} />
     </div>
   );
 }
