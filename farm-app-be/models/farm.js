@@ -11,6 +11,13 @@ const farmSchema = new mongoose.Schema({
   value: Number,    
 })
 
+farmSchema.set('toJSON', {
+  transform: (document, returnedFarm) => {
+    returnedFarm.id = returnedFarm._id.toString()
+    delete returnedFarm._id
+    delete returnedFarm.__v
+  }
+})
 farmSchema.plugin(mongoosePaginate)
 
 module.exports = mongoose.model('Farm', farmSchema)
