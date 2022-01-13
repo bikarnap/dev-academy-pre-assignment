@@ -31,15 +31,22 @@ function App() {
   const [filterSensor, setFilterSensor] = useState('')
   const [filterLocation, setFilterLocation] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [limit] = useState(15)
+  const [pagingInfo, setPagingInfo] = useState({})
 
   useEffect(() => {
-    farmService.getFarms(currentPage, 15)
+    farmService.getFarms(currentPage, limit)
       .then(returnedFarms => 
         (
           setFarms(returnedFarms.farms.docs)
         )
       )
-  }, [currentPage])
+  }, [currentPage, limit])
+
+  useEffect(() => {
+    farmService.getPagingInfo()
+      .then(info => setPagingInfo(info))
+  }, [])
 
   let farmsToRender = (filterSensor === '')
     ? farms
@@ -52,8 +59,7 @@ function App() {
     : farmsToRender.filter(farm => (
       farm.location.toLowerCase().includes(filterLocation.toLowerCase())
     ))
-
-
+  // farmsToRender = farmsToRender.sort((a, b) => a.value - b.value)
 
   const handleFilterSensorChange = ({ target }) => {
     setFilterSensor(target.value)
@@ -64,12 +70,11 @@ function App() {
   }
 
   const handleNextButtonClick = () => {
-    // alert('next button clicked')
-    setCurrentPage(currentPage + 1)
+    if (currentPage >= 1 && currentPage < pagingInfo.totalPages)
+      setCurrentPage(currentPage + 1)
   }
 
   const handlePrevButtonClick = () => {
-    // alert('prev button clicked')
     if (currentPage > 1)
       setCurrentPage(currentPage - 1)
   }
@@ -93,14 +98,17 @@ function App() {
         />
       </div>
       <FarmTable farms={farmsToRender} />
-      <Button 
-        label="<"
-        handleClick={handlePrevButtonClick}
-      />
-      <Button
-        label=">"
-        handleClick={handleNextButtonClick}
-      />
+      <div>
+        Showing {1 + (currentPage * limit) - limit} - {currentPage * limit} of {pagingInfo.totalDocs} farms { ' ' }
+        <Button 
+          label="<"
+          handleClick={handlePrevButtonClick}
+        />
+        <Button
+          label=">"
+          handleClick={handleNextButtonClick}
+        />
+      </div>
     </div>
   );
 }
