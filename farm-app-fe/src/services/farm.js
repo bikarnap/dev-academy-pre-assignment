@@ -7,5 +7,24 @@ const getFarms = (page, limit) => {
   return request.then(res => res.data)
 }
 
-const farmService = { getFarms }
+const getPagingInfo = () => {
+  const request = axios.get(baseUrl)
+  return request.then(res => {
+    const farms = res.data.farms
+    return ({
+      totalDocs: farms.totalDocs,
+      totalPages: farms.totalPages,
+      // nextPage: farms.nextPage,
+      // prevPage: farms.prevPage,
+      // hasPrevPage: farms.hasPrevPage,
+      // hasNextPage: farms.hasNextPage,
+      // page: farms.page,
+    })
+  })
+}
+
+const farmService = { 
+  getFarms,
+  getPagingInfo
+}
 export default farmService
