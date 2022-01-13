@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Button from './components/Button';
 
 // components
 import FarmTable from './components/FarmTable';
@@ -29,15 +30,16 @@ function App() {
   const [farms, setFarms] = useState(initialFarms)
   const [filterSensor, setFilterSensor] = useState('')
   const [filterLocation, setFilterLocation] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
-    farmService.getAll()
+    farmService.getFarms(currentPage, 15)
       .then(returnedFarms => 
         (
-          setFarms(farms.concat(returnedFarms.farms.docs))
+          setFarms(returnedFarms.farms.docs)
         )
       )
-  }, [])
+  }, [currentPage])
 
   let farmsToRender = (filterSensor === '')
     ? farms
@@ -61,6 +63,17 @@ function App() {
     setFilterLocation(target.value)
   }
 
+  const handleNextButtonClick = () => {
+    // alert('next button clicked')
+    setCurrentPage(currentPage + 1)
+  }
+
+  const handlePrevButtonClick = () => {
+    // alert('prev button clicked')
+    if (currentPage > 1)
+      setCurrentPage(currentPage - 1)
+  }
+
   return (
     <div>
       <div>
@@ -80,6 +93,14 @@ function App() {
         />
       </div>
       <FarmTable farms={farmsToRender} />
+      <Button 
+        label="<"
+        handleClick={handlePrevButtonClick}
+      />
+      <Button
+        label=">"
+        handleClick={handleNextButtonClick}
+      />
     </div>
   );
 }
