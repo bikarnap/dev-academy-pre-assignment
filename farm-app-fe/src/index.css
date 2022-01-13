@@ -15,7 +15,12 @@ code {
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 100%;
+  width: 50%;
+}
+
+thead {
+  background-color:black;
+  color: #ffffff;
 }
 
 td, th {
