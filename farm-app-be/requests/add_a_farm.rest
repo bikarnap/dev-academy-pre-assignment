@@ -1,0 +1,9 @@
+POST http://localhost:3001/api/farms
+Content-Type: application/json
+
+{
+  "location": "Pakali Fish farm",
+  "datetime": "2018-12-31T22:00:00.000Z",
+  "sensorType": "temperature",
+  "value": "11"
+}

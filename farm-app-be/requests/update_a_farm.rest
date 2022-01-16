@@ -1,0 +1,8 @@
+PUT http://localhost:3001/api/farms/61e3c63ef9ec1942d3090734
+Content-Type: application/json
+
+{
+  "datetime": "2018-12-31T22:00:00.000Z",
+  "sensorType": "temperature",
+  "value": "3"
+}
