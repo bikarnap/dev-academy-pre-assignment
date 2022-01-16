@@ -23,7 +23,6 @@ const paginateResults = async (req, res) => {
     if (month.length === 1) {
       month = '0' + month
     }
-    console.log(month, typeof month)
     farms = await Farm.paginate({}, options)
     farms.docs = farms.docs.filter(
       farm => farm.datetime.toISOString()
