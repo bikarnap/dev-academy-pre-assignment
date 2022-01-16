@@ -10,7 +10,7 @@ A UI renders the farms that are saved in the database in a table. A user can use
 
 ## Getting started
 Open a terminal (or a shell) and navigate to a location of your choice. Then issue the following command to clone the repository:
-#### `git clone https://gitlab.com/bikarnap/dev-academy-pre-assignment.git`
+#### `git clone https://github.com/bikarnap/dev-academy-pre-assignment.git`
 
 ## Start the backend server
 After cloning the repository as mentioned above, run the following commands
