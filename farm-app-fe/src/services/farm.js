@@ -23,8 +23,13 @@ const getPagingInfo = () => {
   })
 }
 
+const create = newObject => {
+  return axios.post(baseUrl, newObject)
+}
+
 const farmService = { 
   getFarms,
-  getPagingInfo
+  getPagingInfo,
+  create
 }
 export default farmService

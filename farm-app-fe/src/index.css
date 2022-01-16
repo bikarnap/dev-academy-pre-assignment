@@ -15,7 +15,7 @@ code {
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 50%;
+  width: 100%;
 }
 
 thead {
@@ -31,4 +31,34 @@ td, th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+input {
+  width: 350px;
+}
+
+.farm-table {
+  float: left;
+  padding: 20px 10px;
+  width: 40%;
+}
+
+.farm-chart {
+  float: left;
+  width: 35%;
+  padding: 20px 10px;
+}
+
+.filter {
+  padding: 20px 10px;
+}
+
+.showing {
+  padding: 20px 10px;
+}
+
+.add-farm {
+  float: left;
+  width: 15%;
+  padding: 20px 10px;
 }

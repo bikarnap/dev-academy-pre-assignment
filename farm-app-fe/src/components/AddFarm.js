@@ -13,10 +13,14 @@ const AddFarm = (props) => {
   return(
     <div>
       <form onSubmit={handleAddFarm}>
-        <input type="text" value={farm.location} onChange={handleLocationChange} />
-        <input type="datetime-local" value={farm.datetime} onChange={handleDatetimeChange} />
-        <input type="text" value={farm.sensorType} onChange={handleSensorTypeChange} />
-        <input type="number" value={farm.value} onChange={handleValueChange} />
+        <label for="location">Location </label><br />
+        <input type="text" value={farm.location} onChange={handleLocationChange} /><br />
+        <label for="datetime">Datetime </label><br />
+        <input type="datetime-local" value={farm.datetime} onChange={handleDatetimeChange} /><br />
+        <label for="sensortype">Sensor type </label><br />
+        <input type="text" value={farm.sensorType} onChange={handleSensorTypeChange} /><br />
+        <label for="Value">Value </label><br />
+        <input type="number" value={farm.value} onChange={handleValueChange} /><br />
         <input type="submit" value="Add farm" />
       </form>
     </div>

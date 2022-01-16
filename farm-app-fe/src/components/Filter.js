@@ -10,7 +10,7 @@ const Filter = (props) => {
 
   return(
     <>
-      Filer by {filterType}{' '} 
+      Filter by {filterType}{' '} 
       <input 
         type="text" 
         value={filter} 
