@@ -72,7 +72,7 @@ farmsRouter.get('/', paginateResults)
 // GET
 // single farm with its id parameter
 // /api/farms/:id
-farmsRouter.get('/:id', (req, res) => {
+farmsRouter.get('/:id', (req, res, next) => {
   Farm.findById(req.params.id)
     .then(farm => {
       if (farm)
@@ -80,7 +80,9 @@ farmsRouter.get('/:id', (req, res) => {
       else 
         res.status(404).end()
     })
-    .catch(err => console.log(err.message))
+    .catch(err => {
+      next(err)
+    })
 })
 
 // GET
