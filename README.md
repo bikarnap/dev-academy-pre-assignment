@@ -24,6 +24,9 @@ TEST_MONGODB_URI=mongodb://localhost:27017/farmstestdb
 
 PORT=3001
 ```
+In order to upload the csv files, issue the command 
+##### `node utils/uploadCsv.js`
+__Wait for some time so that the contents of the provided csv files get uploaded to the database collection. Command line arguments can also be given to upload from a different csv file (more than one csv file can be given with full path, each file sepaarated with a space). The upload should be manually stopped by pressing Ctrl + C.__
 ##### `npm install`
 ##### `npm start`
 The server will start listening on port 3001 (assuming the defined port is 3001). [Click-here](#rest-apis) for API endpoints. 
