@@ -1,12 +1,10 @@
 import React from 'react'
 import '@testing-library/jest-dom/extend-expect'
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Button from './Button'
 
-test('Button has text component', () => {
-  const buttonComponent = render(
-    <Button label="button label" />
-  )
-  const el = buttonComponent.getByText('button label')
-  expect(el).toBeDefined()
-})
+test('renders learn react link', () => {
+  render(<Button label="next" />);
+  const element = screen.getByText(/next/i);
+  expect(element).toBeInTheDocument();
+});
