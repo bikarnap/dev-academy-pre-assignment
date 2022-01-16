@@ -1,50 +1,164 @@
 const farmsRouter = require('express').Router()
 const Farm = require('../models/farm')
+const validateFarmData = require('../utils/validateFarmData')
 
-farmsRouter.get('/', async (req, res) => {
-  const { sensorType, page, limit } = req.query
+// Paginate results based on query strings or without query strings
+const paginateResults = async (req, res) => {
+  const { 
+    month,
+    sensorType,
+    page,
+    limit
+  } = req.query
+
   const options = {
     page: parseInt(page) || 1,
-    limit: parseInt(limit) || 100
+    limit: parseInt(limit) || 15
   }
 
-  if (sensorType) {
-    const farms = await Farm.paginate({ sensorType: sensorType }, options)
-    if (farms) {
-      let nextCursor = null
-      if (farms.hasNextPage) {
-        nextCursor = `/api/farms?sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
-      } else {
-        nextCursor = null
-      }
-      
-      if (nextCursor) {
-        res.status(200)
-        .json({ nextCursor, farms }) 
-      } else {
-        res.status(200)
-        .json(farms) 
-      }
-     
+  let farms
+  let nextCursor = null
+
+  if (month) {
+    if (month.length === 1) {
+      month = '0' + month
     }
+    console.log(month, typeof month)
+    farms = await Farm.paginate({}, options)
+    farms.docs = farms.docs.filter(
+      farm => farm.datetime.toISOString()
+        .slice(5, 7)
+        .includes(month)
+    )
+    if (farms && farms.hasNextPage) {
+      nextCursor = `/api/farms?month=${month}&page=${farms.nextPage}&limit=${farms.limit}`
+    }
+  } else if (sensorType) {
+    farms = await Farm.paginate({ sensorType: sensorType }, options)
+    nextCursor = `/api/farms?sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
+
+  } else if (sensorType && month) {
+    farms = await Farm.paginate({ sensorType: sensorType }, options)
+    farms.docs = farms.docs.filter(
+      farm => farm.datetime.toISOString()
+        .slice(5, 7)
+        .includes(month)
+    )
+    if (farms && farms.hasNextPage) {
+      nextCursor = `/api/farms?month=${month}sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
+    }
+
   } else {
-    const farms = await Farm.paginate({}, options)
-    if (farms) {
-      let nextCursor = `/api/farms?page=${farms.nextPage}&limit=${farms.limit}`
-      if (farms.hasNextPage) {
-        nextCursor = `/api/farms?page=${farms.nextPage}&limit=${farms.limit}`
-      } else {
-        nextCursor = null
-      }
-      
-      if (nextCursor) {
-        res.status(200)
-        .json({ nextCursor, farms }) 
-      } else {
-        res.status(200)
-        .json(farms) 
-      }
+    farms = await Farm.paginate({}, options)
+    if (farms && farms.hasNextPage) {
+      nextCursor = `/api/farms?page=${farms.nextPage}&limit=${farms.limit}`
     }
+  }
+
+  if (nextCursor) {
+    res.status(200).json({ nextCursor, farms })
+  } else if (nextCursor === null) {
+    res.status(200).json(farms)
+  } else {
+    res.status(404).end()
+  }
+}
+
+// GET
+// sensorType query: /api/farms?sensorType={sensorType}[&page={page}&limit={limit}]
+// month query: /api/farms?month={month}[&page={page}&limit={limit}]
+farmsRouter.get('/', paginateResults)
+
+// GET
+// single farm with its id parameter
+// /api/farms/:id
+farmsRouter.get('/:id', (req, res) => {
+  Farm.findById(req.params.id)
+    .then(farm => {
+      if (farm)
+        res.json({farm: farm})
+      else 
+        res.status(404).end()
+    })
+    .catch(err => console.log(err.message))
+})
+
+// GET
+// Statistics about the farms in in the collection of MongoDB
+// Minimum and maximum values of each sensor types
+// Total counts of sensor data === total documents in the collection of MongoDB
+// Total count of sensor types in the collection of MongoDB
+// Average of each sensor type
+farmsRouter.get('/statistics', (req, res) => {
+  Farm.aggregate([
+    { 
+      $group: { 
+        _id: {
+          sensorType: "$sensorType"
+        },
+        max: { $max: "$value"},
+        min: { $min: "$value"},
+        averageValue: { $avg: "$value" },
+        sensorCount: { $sum: 1},
+        totalRecords: { $sum: "$sensorType"}
+      }, 
+    }, 
+  ], (err, farms) => {
+    console.log(err, farms);
+    // remap the results
+    var minValues = farms.map(farm => {
+      // using ES6 to compute property name
+      return { 
+        [farm._id.sensorType]: farm.min 
+      }
+    })
+
+    const maxValues = farms.map(farm => {
+      return {
+        [farm._id.sensorType]: farm.max 
+      }
+    })
+
+    const averageValues = farms.map(farm => {
+      return { 
+        [farm._id.sensorType]: farm.averageValue
+      }
+    })
+
+    const sensorCounts = farms.map(farm => {
+      return { 
+        [farm._id.sensorType]: farm.sensorCount
+      }
+    })
+
+    res.json({ 
+      minValues, 
+      maxValues, 
+      averageValues,
+      sensorCounts,
+    })
+    }
+  );
+})
+
+// POST
+// Validate input farm data and save in the MongoDB collection
+farmsRouter.post('/', (req, res) => {
+  const body = req.body
+
+  if (validateFarmData(body.sensorType, body.value)) {
+    const farm = new Farm({
+      location: body.location,
+      datetime: body.datetime.toString(),
+      sensorType: body.sensorType,
+      value: body.value
+    })
+
+    farm.save()
+      .then(savedFarm => {
+        res.json({savedFarm: savedFarm})
+        console.log(savedFarm)
+      })
   }
 })
 
