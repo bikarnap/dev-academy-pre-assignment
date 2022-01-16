@@ -161,6 +161,8 @@ farmsRouter.post('/', (req, res) => {
         res.status(201).json({ savedFarm: savedFarm })
         console.log(savedFarm)
       })
+  } else {
+    res.status(400).end()
   }
 })
 
