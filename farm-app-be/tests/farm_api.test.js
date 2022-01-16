@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const { init } = require('../models/farm')
 const Farm = require('../models/farm')
 
 const api = supertest(app)
@@ -11,14 +12,12 @@ const initialFarms = [
     datetime: new Date().toISOString(),
     sensorType: 'pH',
     value: 4,
-    id: 1
   },
   {
     location: 'location 2',
     datetime: new Date().toISOString(),
     sensorType: 'rainFall',
     value: 235,
-    id: 2
   }
 ]
 
@@ -50,6 +49,48 @@ test('a specific farm is within the returned farms', async () => {
   expect(locations).toContain(
     'location 1'
   )
+})
+
+test('a valid farm can be added', async () => {
+  const newFarm =  {
+    location: 'location 3',
+    datetime: new Date().toISOString(),
+    sensorType: 'temperature',
+    value: -12,
+  }
+
+  await api
+    .post('/api/farms')
+    .send(newFarm)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const res = await api.get('/api/farms')
+
+  const locations = res.body.docs.map(farm => farm.location)
+
+  expect(res.body.docs).toHaveLength(initialFarms.length + 1)
+  expect(locations).toContain(
+    'location 3'
+  )
+})
+
+test('invalid farm cannot be added', async () => {
+  const newFarm = {
+    location: 'location 1',
+    datetime: new Date().toISOString(),
+    sensorType: 'humidity',
+    value: 97,
+  }
+
+  await api
+    .post('/api/farms')
+    .send(newFarm)
+    .expect(400)
+
+  const res = await api.get('/api/farms')
+
+  expect(res.body.docs).toHaveLength(initialFarms.length)
 })
 
 afterAll(() => {
