@@ -164,4 +164,44 @@ farmsRouter.post('/', (req, res) => {
   }
 })
 
+// DELETE 
+// Delete a farm with a given farm id
+farmsRouter.delete('/:id', (req, res, next) => {
+  Farm.findByIdAndRemove(req.params.id)
+    .then(result => {
+      res.status(204).end()
+    })
+    .catch(err => next(err))
+})
+
+// PUT
+// Update a farm with a given farm id
+farmsRouter.put('/:id', (req, res, next) => {
+  const body = req.body
+  let farmValidation
+  if (body.sensorType && body.value) {
+    farmValidation = validateFarmData(body.sensorType, body.value)
+  }
+
+  if (farmValidation) {
+    const farm = {
+      location: body.location,
+      datetime: body.datetime,
+      sensorType: body.sensorType,
+      value: body.value
+    }
+  
+    Farm.findByIdAndUpdate(req.params.id, farm, { new: true })
+      .then(updatedFarm => {
+        res.json(updatedFarm)
+      })
+      .catch(err => next(err))
+  } else {
+    console.log('Invalid farm')
+    res.status(400).send({
+      error: 'invalid farm data'
+    })
+  }
+})
+
 module.exports = farmsRouter
