@@ -21,7 +21,7 @@ const uploadCsvs = (...csvs) => {
               sensorType: farm.sensorType,
               value: farm.value
             })
-  
+
             newFarm.save()
               // .then(savedFarm => console.log(savedFarm))
               .catch(err => console.log(err.message))
@@ -32,10 +32,10 @@ const uploadCsvs = (...csvs) => {
       })
   })
 }
-const arguments = process.argv.slice(2)
-console.log('arguments', arguments)
+const cmdArguments = process.argv.slice(2)
+console.log('arguments', cmdArguments)
 const csvs = ['Nooras_farm.csv', 'PartialTech.csv', 'ossi_farm.csv', 'friman_metsola.csv']
-if (arguments.length > 0)
-  uploadCsvs(...arguments)
+if (cmdArguments.length > 0)
+  uploadCsvs(...cmdArguments)
 else
   uploadCsvs(...csvs)
