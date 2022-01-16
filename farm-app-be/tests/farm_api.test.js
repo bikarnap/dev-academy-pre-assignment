@@ -1,8 +1,34 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
+const Farm = require('../models/farm')
 
 const api = supertest(app)
+
+const initialFarms = [
+  {
+    location: 'location 1',
+    datetime: new Date().toISOString(),
+    sensorType: 'pH',
+    value: 4,
+    id: 1
+  },
+  {
+    location: 'location 2',
+    datetime: new Date().toISOString(),
+    sensorType: 'rainFall',
+    value: 235,
+    id: 2
+  }
+]
+
+beforeEach(async () => {
+  await Farm.deleteMany({})
+  let farmObject = new Farm(initialFarms[0])
+  await farmObject.save()
+  farmObject = new Farm(initialFarms[1])
+  await farmObject.save()
+})
 
 test('farms are returned as json', async () => {
   await api
@@ -11,14 +37,19 @@ test('farms are returned as json', async () => {
     .expect('Content-type', /application\/json/)
 })
 
-test('the length of returned farms with limit 15 is 15', async () => {
+test('all farms are returned', async () => {
   const res = await api.get('/api/farms')
-  expect(res.body.farms.docs).toHaveLength(15)
+  expect(res.body.docs).toHaveLength(initialFarms.length)
 })
 
-test('the first farm has location Noora\'s farm', async () => {
+test('a specific farm is within the returned farms', async () => {
   const res = await api.get('/api/farms')
-  expect(res.body.farms.docs[0].location).toBe('Noora\'s farm')
+  const locations = res.body.docs.map(
+    farm => farm.location
+  )
+  expect(locations).toContain(
+    'location 1'
+  )
 })
 
 afterAll(() => {
