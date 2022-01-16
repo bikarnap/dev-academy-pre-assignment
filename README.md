@@ -45,19 +45,9 @@ In case, the app does not launch automatically, it can be manually launched on y
 Note: Make sure that the port 3000 is not being used by other services.
 ```
 
-## Screenshots of running application
+## Screenshot of running application
 
-#### Login Page 1
-![Login Page](./screenshots/login-page.PNG)
-
-### Login Page 2
-![Login Page](./screenshots/login-page-1.PNG)
-
-#### Todo App Page 1
-![Todo App Page](./screenshots/todo-app-page.PNG)
-
-#### Todo App Page 2
-![Todo App Page](./screenshots/todo-app-page-1.PNG)
+![Farm App](./application_screenshot.PNG)
 
 ## REST APIs
 * GET farms: `http://localhost:3001/api/farms/`
