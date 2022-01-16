@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 import './App.css';
-import AddFarm from './components/AddFarm';
-import Button from './components/Button';
-import Chart from './components/Chart';
 
 // components
-import FarmTable from './components/FarmTable';
-import Filter from './components/Filter';
+import FarmTable from './components/FarmTable'
+import Filter from './components/Filter'
+import AddFarm from './components/AddFarm'
+import Button from './components/Button'
+import Chart from './components/Chart'
 
 // services
 import farmService from './services/farm';
@@ -122,43 +122,6 @@ function App() {
         />
         <strong>{message}</strong>
       </div>
-      {/* <div>
-        <Filter 
-          filter={filterSensor}
-          filterType="sensor type"
-          handleFilterChange={handleFilterSensorChange}
-          placeholder="eg: rainFall"
-        />
-      </div>
-      <div className="farm-table">
-        <FarmTable farms={farmsToRender} />
-      </div>
-      <div className="farm-chart">
-        <Chart data={farmsToRender} />
-      </div>
-      
-      <AddFarm
-          farm={farm}
-          handleAddFarm={(e) => {e.preventDefault()
-          console.log(farm)}}
-          handleLocationChange={(e) => setFarm({...farm, location: e.target.value}) }
-          handleDatetimeChange={(e) => setFarm({...farm, datetime: new Date(e.target.value).toISOString()}) }
-          handleSensorTypeChange={(e) => setFarm({...farm, sensorType: e.target.value}) }
-          handleValueChange={(e) => setFarm({...farm, value: e.target.value}) }
-        />
-      <div>
-        Showing {1 + (currentPage * limit) - limit} - {currentPage * limit} of {pagingInfo.totalDocs} farms { ' ' }
-        <Button 
-          label="<"
-          handleClick={handlePrevButtonClick}
-        />
-        <Button
-          label=">"
-          handleClick={handleNextButtonClick}
-        />
-
-        
-      </div> */}
     </div>
   );
 }
