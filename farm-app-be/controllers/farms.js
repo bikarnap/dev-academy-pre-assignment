@@ -4,7 +4,7 @@ const validateFarmData = require('../utils/validateFarmData')
 
 // Paginate results based on query strings or without query strings
 const paginateResults = async (req, res) => {
-  const { 
+  let {
     month,
     sensorType,
     page,
@@ -37,16 +37,16 @@ const paginateResults = async (req, res) => {
     farms = await Farm.paginate({ sensorType: sensorType }, options)
     nextCursor = `/api/farms?sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
 
-  } else if (sensorType && month) {
-    farms = await Farm.paginate({ sensorType: sensorType }, options)
-    farms.docs = farms.docs.filter(
-      farm => farm.datetime.toISOString()
-        .slice(5, 7)
-        .includes(month)
-    )
-    if (farms && farms.hasNextPage) {
-      nextCursor = `/api/farms?month=${month}sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
-    }
+  // } else if (sensorType && month) {
+  //   farms = await Farm.paginate({ sensorType: sensorType }, options)
+  //   farms.docs = farms.docs.filter(
+  //     farm => farm.datetime.toISOString()
+  //       .slice(5, 7)
+  //       .includes(month)
+  //   )
+  //   if (farms && farms.hasNextPage) {
+  //     nextCursor = `/api/farms?month=${month}sensorType=${sensorType}&page=${farms.nextPage}&limit=${farms.limit}`
+  //   }
 
   } else {
     farms = await Farm.paginate({}, options)
@@ -76,8 +76,8 @@ farmsRouter.get('/:id', (req, res, next) => {
   Farm.findById(req.params.id)
     .then(farm => {
       if (farm)
-        res.json({farm: farm})
-      else 
+        res.json({ farm: farm })
+      else
         res.status(404).end()
     })
     .catch(err => {
@@ -93,54 +93,54 @@ farmsRouter.get('/:id', (req, res, next) => {
 // Average of each sensor type
 farmsRouter.get('/statistics', (req, res) => {
   Farm.aggregate([
-    { 
-      $group: { 
+    {
+      $group: {
         _id: {
-          sensorType: "$sensorType"
+          sensorType: '$sensorType'
         },
-        max: { $max: "$value"},
-        min: { $min: "$value"},
-        averageValue: { $avg: "$value" },
-        sensorCount: { $sum: 1},
-        totalRecords: { $sum: "$sensorType"}
-      }, 
-    }, 
+        max: { $max: '$value' },
+        min: { $min: '$value' },
+        averageValue: { $avg: '$value' },
+        sensorCount: { $sum: 1 },
+        totalRecords: { $sum: '$sensorType' }
+      },
+    },
   ], (err, farms) => {
-    console.log(err, farms);
+    console.log(err, farms)
     // remap the results
     var minValues = farms.map(farm => {
       // using ES6 to compute property name
-      return { 
-        [farm._id.sensorType]: farm.min 
+      return {
+        [farm._id.sensorType]: farm.min
       }
     })
 
     const maxValues = farms.map(farm => {
       return {
-        [farm._id.sensorType]: farm.max 
+        [farm._id.sensorType]: farm.max
       }
     })
 
     const averageValues = farms.map(farm => {
-      return { 
+      return {
         [farm._id.sensorType]: farm.averageValue
       }
     })
 
     const sensorCounts = farms.map(farm => {
-      return { 
+      return {
         [farm._id.sensorType]: farm.sensorCount
       }
     })
 
-    res.json({ 
-      minValues, 
-      maxValues, 
+    res.json({
+      minValues,
+      maxValues,
       averageValues,
       sensorCounts,
     })
-    }
-  );
+  }
+  )
 })
 
 // POST
@@ -158,13 +158,13 @@ farmsRouter.post('/', (req, res) => {
 
     farm.save()
       .then(savedFarm => {
-        res.json({savedFarm: savedFarm})
+        res.status(201).json({ savedFarm: savedFarm })
         console.log(savedFarm)
       })
   }
 })
 
-// DELETE 
+// DELETE
 // Delete a farm with a given farm id
 farmsRouter.delete('/:id', (req, res, next) => {
   Farm.findByIdAndRemove(req.params.id)
@@ -190,7 +190,7 @@ farmsRouter.put('/:id', (req, res, next) => {
       sensorType: body.sensorType,
       value: body.value
     }
-  
+
     Farm.findByIdAndUpdate(req.params.id, farm, { new: true })
       .then(updatedFarm => {
         res.json(updatedFarm)
