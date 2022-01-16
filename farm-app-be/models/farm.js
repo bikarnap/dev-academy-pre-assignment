@@ -8,7 +8,7 @@ const farmSchema = new mongoose.Schema({
     type: String,
     enum: ['temperature', 'rainFall', 'pH']
   },
-  value: Number,    
+  value: Number,
 })
 
 farmSchema.set('toJSON', {
